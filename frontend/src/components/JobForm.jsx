@@ -7,7 +7,7 @@ export default function JobForm({ refresh }) {
   const [status, setStatus] = useState("Applied");
 
   const submitJob = async () => {
-    await axios.post("http://localhost:5000/jobs", {
+    await axios.post("https://job-tracker-oncc.onrender.com/jobs", {
       company,
       role,
       status

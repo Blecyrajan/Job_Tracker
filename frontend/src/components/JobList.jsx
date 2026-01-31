@@ -7,7 +7,7 @@ export default function JobList({ jobs, filter, refresh }) {
       : jobs.filter((job) => job.status === filter);
 
   const updateStatus = async (id, status) => {
-    await axios.put(`http://localhost:5000/jobs/${id}`, { status });
+    await axios.put(`https://job-tracker-oncc.onrender.com/jobs/${id}`, { status });
     refresh();
   };
 

@@ -12,7 +12,7 @@ export default function JobDescription({
       return;
     }
 
-    const res = await axios.post("http://localhost:5000/analyze", {
+    const res = await axios.post("https://job-tracker-oncc.onrender.com/analyze", {
       resume,
       jobDescription
     });

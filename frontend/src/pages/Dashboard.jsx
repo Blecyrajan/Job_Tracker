@@ -15,7 +15,7 @@ export default function Dashboard() {
   const [filter, setFilter] = useState("All");
 
   const fetchJobs = async () => {
-    const res = await axios.get("http://localhost:5000/jobs");
+    const res = await axios.get("https://job-tracker-oncc.onrender.com/jobs");
     setJobs(res.data);
   };
 

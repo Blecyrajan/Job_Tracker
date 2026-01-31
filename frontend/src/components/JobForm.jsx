@@ -5,52 +5,80 @@ export default function JobForm({ refresh }) {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [status, setStatus] = useState("Applied");
+  const [loading, setLoading] = useState(false);
 
-  const submitJob = async () => {
-    await axios.post("https://job-tracker-oncc.onrender.com/jobs", {
-      company,
-      role,
-      status
-    });
-    setCompany("");
-    setRole("");
-    refresh();
+  const submitJob = async (e) => {
+    e.preventDefault(); // 🔴 VERY IMPORTANT
+
+    if (!company || !role) {
+      alert("Please enter company and role");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await axios.post(
+        "https://job-tracker-oncc.onrender.com/jobs",
+        {
+          company,
+          role,
+          status
+        }
+      );
+
+      // Reset fields
+      setCompany("");
+      setRole("");
+      setStatus("Applied");
+
+      // Refresh job list
+      refresh();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to add job. Backend may be sleeping.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="bg-white p-4 rounded shadow mb-4">
-      <h2 className="font-semibold mb-2">Add Job</h2>
+    <form onSubmit={submitJob} className="mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <input
+          type="text"
+          placeholder="Company"
+          className="border rounded px-3 py-2"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
 
-      <input
-        className="border p-2 w-full mb-2"
-        placeholder="Company"
-        value={company}
-        onChange={(e) => setCompany(e.target.value)}
-      />
+        <input
+          type="text"
+          placeholder="Role"
+          className="border rounded px-3 py-2"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        />
 
-      <input
-        className="border p-2 w-full mb-2"
-        placeholder="Role"
-        value={role}
-        onChange={(e) => setRole(e.target.value)}
-      />
-
-      <select
-        className="border p-2 w-full mb-2"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-      >
-        <option>Applied</option>
-        <option>Interview</option>
-        <option>Rejected</option>
-      </select>
+        <select
+          className="border rounded px-3 py-2"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+          <option>Applied</option>
+          <option>Interview</option>
+          <option>Rejected</option>
+        </select>
+      </div>
 
       <button
-        onClick={submitJob}
-        className="bg-green-600 text-white px-3 py-1 rounded"
+        type="submit"
+        disabled={loading}
+        className="mt-4 bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 disabled:opacity-50"
       >
-        Add Job
+        {loading ? "Adding..." : "Add Job"}
       </button>
-    </div>
+    </form>
   );
 }

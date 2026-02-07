@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { API_BASE } from "../api";
+import { Link } from "react-router-dom";
 
 export default function Login({ setToken }) {
   const [email, setEmail] = useState("");
@@ -18,6 +19,9 @@ export default function Login({ setToken }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-6 rounded shadow w-80">
+        <p className="text-sm mt-3 text-center">
+            New user? <Link to="/register" className="text-blue-600">Register</Link>
+        </p>
         <h2 className="text-xl font-bold mb-4">Sign In</h2>
 
         <input
@@ -43,3 +47,7 @@ export default function Login({ setToken }) {
     </div>
   );
 }
+
+
+
+

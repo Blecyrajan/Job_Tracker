@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../api";
 
 export default function JobForm({ refresh }) {
   const [company, setCompany] = useState("");
@@ -8,10 +9,16 @@ export default function JobForm({ refresh }) {
   const [loading, setLoading] = useState(false);
 
   const submitJob = async (e) => {
-    e.preventDefault(); // 🔴 VERY IMPORTANT
+    e.preventDefault(); // prevent page reload
 
     if (!company || !role) {
-      alert("Please enter company and role");
+      alert("Please enter both company and role");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to add jobs");
       return;
     }
 
@@ -19,15 +26,20 @@ export default function JobForm({ refresh }) {
       setLoading(true);
 
       await axios.post(
-        "https://job-tracker-oncc.onrender.com/jobs",
+        `${API_BASE}/jobs`,
         {
           company,
           role,
           status
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 
-      // Reset fields
+      // Reset form
       setCompany("");
       setRole("");
       setStatus("Applied");
@@ -36,7 +48,7 @@ export default function JobForm({ refresh }) {
       refresh();
     } catch (error) {
       console.error(error);
-      alert("Failed to add job. Backend may be sleeping.");
+      alert("Failed to add job. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -48,7 +60,7 @@ export default function JobForm({ refresh }) {
         <input
           type="text"
           placeholder="Company"
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
         />
@@ -56,13 +68,13 @@ export default function JobForm({ refresh }) {
         <input
           type="text"
           placeholder="Role"
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
           value={role}
           onChange={(e) => setRole(e.target.value)}
         />
 
         <select
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
         >

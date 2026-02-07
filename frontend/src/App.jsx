@@ -4,11 +4,24 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
+  const isAuthenticated = !!localStorage.getItem("token");
+
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
+        }
+      />
+
+      <Route
+        path="/"
+        element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />}
+      />
     </Routes>
   );
 }

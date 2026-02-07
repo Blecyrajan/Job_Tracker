@@ -1,18 +1,29 @@
 import { useState } from "react";
 import axios from "axios";
 import { API_BASE } from "../api";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const register = async () => {
+  try {
     await axios.post(`${API_BASE}/register`, {
       email,
       password
     });
+
     alert("Registered successfully. Please login.");
-  };
+    navigate("/login"); 
+  } catch (err) {
+    alert("Registration failed");
+  }
+};
+
+
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

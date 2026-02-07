@@ -2,19 +2,30 @@ import { useState } from "react";
 import axios from "axios";
 import { API_BASE } from "../api";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Login({ setToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const login = async () => {
+  try {
     const res = await axios.post(`${API_BASE}/login`, {
       email,
       password
     });
+
     localStorage.setItem("token", res.data.access_token);
-    setToken(res.data.access_token);
-  };
+
+    navigate("/dashboard"); // 🔴 THIS WAS MISSING
+  } catch (err) {
+    alert("Invalid credentials");
+  }
+};
+
+
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
